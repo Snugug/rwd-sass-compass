@@ -663,6 +663,246 @@ $gutters: 1/3;
           </section>
         </section>
 
+        <!-- Partial Structure -->
+        <section data-transition="zoom">
+          <section id="partial-structure">
+            <h1>Partial Structure</h1>
+          </section>
+        </section>
+        <section data-transition="concave">
+          <section id="partial-structure-intro">
+            <p>Partials allow us to divide up our styling into discrete pieces, making organizing and maintaining our styling easy</p>
+            <p class="fragment">There are many different ways to organize your partials, this is the standard we will be working with from now on.</p>
+          </section>
+        </section>
+
+        <section>
+          <section id="global-partials">
+            <h2>Global Partials</h2>
+          </section>
+          <section id="global-basics">
+            <p>Global partials contain styling and development knowledge that are central and can be shared across multiple components.</p>
+            <p class="fragment">Examples of shared styling knowledge includes color variables, dark/light contrast mixins, and general typography extendable classes</p>
+          </section>
+          <section id="global-structure">
+            <p>In your <code class="language-markup">sass</code> folder, create a <code class="language-markup">global</code>folder and inside that, a folder apiece for <code class="language-markup">extends, functions, mixins, variables</code> to place respective partials in to. In each folder, create a <code class="language-markup">_all.scss</code> partial for a global import for those folders</p>
+            <div class="fragment folders">
+              <details open>
+                <summary>sass</summary>
+                <pre>style.scss</pre>
+                <details open>
+                  <summary>global</summary>
+                  <details open>
+                    <summary>extends</summary>
+                    <pre>_all.scss</pre>
+                  </details>
+                  <details open>
+                    <summary>functions</summary>
+                    <pre>_all.scss</pre>
+                  </details>
+                  <details open>
+                    <summary>mixins</summary>
+                    <pre>_all.scss</pre>
+                  </details>
+                  <details open>
+                    <summary>variables</summary>
+                    <pre>_all.scss</pre>
+                  </details>
+                </details>
+              </details>
+            </div>
+          </section>
+          <section id="global-style">
+            <p>In your <code class="language-markup">style.scss</code> file, start it with any of your file-specific setup variables (cross-browser/Jacket, etc…, not global setup variables that need to be shared across multiple files, like grid and media query variables), then the Compass extension imports you need for that file, finally followed by your global imports</p>
+          </section>
+          <section id="global-style-scss">
+            <pre><code class="language-scss">//////////////////////////////
+// Cross Browser Support
+$legacy-support-for-ie: false;
+$jacket: 'base';
+
+//////////////////////////////
+// Normalize
+@import "normalize";
+
+//////////////////////////////
+// Compass Extensions
+@import "toolkit";
+@import "breakpoint";
+@import "singularitygs";
+
+//////////////////////////////
+// Globals
+@import "global/variables/all";
+@import "global/functions/all";
+@import "global/mixins/all";
+@import "global/extends/all";</code></pre>
+          </section>
+        </section>
+
+        <!-- Components -->
+        <section>
+          <section id="components">
+            <h2>Components</h2>
+          </section>
+          <section id="component-basics">
+            <p>Everything on your site is a component; your messages, your media galleries, your buttons, your navigation.</p>
+            <p class="fragment">Each component should be written as a generalized mixin with defaulted, globally scoped variables. Then, each instance of a component should be written as an extendable class. Finally, each extendable class should be extended as a full selector</p>
+          </section>
+          <section id="component-structure">
+            <p>In your <code class="language-markup">sass</code> folder, create a <code class="language-markup">components</code> folder and inside of that, a folder and a partial a piece for each component. Inside each folder, create <code class="language-markup">_extends.scss, _mixins.scss, _variables.scss</code> partials for that component, and import them into your component partial</p>
+            <div class="fragment folders">
+              <details open>
+                <summary>sass</summary>
+                <pre>style.scss</pre>
+                <details open>
+                  <summary>components</summary>
+                  <pre>_button.scss</pre>
+                  <pre>_message.scss</pre>
+                  <details open>
+                    <summary>button</summary>
+                    <pre>_extends.scss</pre>
+                    <pre>_mixins.scss</pre>
+                    <pre>_variables.scss</pre>
+                  </details>
+                  <details open>
+                    <summary>message</summary>
+                    <pre>_extends.scss</pre>
+                    <pre>_mixins.scss</pre>
+                    <pre>_variables.scss</pre>
+                  </details>
+                </details>
+              </details>
+            </div>
+          </section>
+          <section id="component-variables-scss">
+            <pre><code class="language-scss">$message-status-color: $primary-color !default;
+$message-warning-color: $secondary-color: !default;
+$message-error-color: $tertiary-color !default;
+
+$message-border-radius: $std-border-radius !default;
+$message-extend: true !default;</code></pre>
+          </section>
+          <section id="component-mixin-scss">
+            <pre><code class="language-scss small">@mixin message--core($border-radius: $message-border-radius, $extend: $message-extend) {
+  @if $extend and $border-radius == $message-border-radius {
+    @extend %message--core;
+  }
+  @if $extend and not $border-radius == $message-border-radius {
+    @extend %message--core;
+    @include border-radius: $message-border-radius;
+  }
+  @else {
+    width: 80%;
+    margin: 0 auto;
+    padding: .5em;
+    border: 1px solid black;
+    @include border-radius: $message-border-radius;
+  }
+}
+…</code></pre>
+          </section>
+          <section id="component-extend-scss">
+            <pre><code class="language-scss small">$message-extendables-extended: false !default;
+
+@if not ($message-extendables-extended) {
+  %message--core {
+    @include message--core($extend: false);
+  }
+
+  %message--status {
+    @include message--core($extend: true);
+    @include message--instance($message-status-color);
+  }
+  …
+  %message--error {
+    @include message--core($extend: true);
+    @include message--instance($message-error-color);
+  }
+}
+
+$message-extendables-extended: true;</code></pre>
+          </section>
+          <section id="component-component-scss">
+            <pre><code class="language-scss small">@import "message/variables";
+@import "message/mixins";
+@import "message/extends";
+
+.message {
+  @extend %message-core;
+}
+
+.message--status {
+  @extend %message--status;
+}
+.message--error {
+  @extend %message--error;
+}</code></pre>
+          </section>
+        </section>
+
+        <!-- Layouts -->
+        <section>
+          <section id="layouts">
+            <h2>Layouts</h2>
+          </section>
+          <section id="layout-basics">
+            <p>Layouts get yet a third top level partial folder. Generally there will be a handful of set layouts on a given site, and each layout should get a partial structure similar to components.</p>
+          </section>
+          <section id="layout-structure">
+            <p>In your <code class="language-markup">sass</code> folder, create a <code class="language-markup">layouts</code> folder and inside of that, a folder and a partial a piece for each layout. Inside each folder, create <code class="language-markup">_extends.scss, _mixins.scss, _variables.scss</code> partials for that layout, and import them into your layout partial</p>
+            <div class="fragment folders">
+              <details open>
+                <summary>sass</summary>
+                <pre>style.scss</pre>
+                <details open>
+                  <summary>layouts</summary>
+                  <pre>_article.scss</pre>
+                  <pre>_landing.scss</pre>
+                  <details open>
+                    <summary>article</summary>
+                    <pre>_extends.scss</pre>
+                    <pre>_mixins.scss</pre>
+                    <pre>_variables.scss</pre>
+                  </details>
+                  <details open>
+                    <summary>landing</summary>
+                    <pre>_extends.scss</pre>
+                    <pre>_mixins.scss</pre>
+                    <pre>_variables.scss</pre>
+                  </details>
+                </details>
+              </details>
+            </div>
+          </section>
+          </section>
+        </section>
+
+        <section>
+           <section id="challenge-16-update-globals" data-state="bronze">
+            <h2>Challenge 16: Update Globals</h2>
+            <ul>
+              <li>Update your partials to use the new Global partial structure</li>
+              <li>Clean up your non-partial files so they follow the same patterns</li>
+            </ul>
+            <aside class="notes">20 Minutes</aside>
+          </section>
+          <section id="challenge-17-update-components" data-state="silver">
+            <h2>Challenge 17: Update Components</h2>
+            <ul>
+              <li>Update your partials to use the new Component  partial structure</li>
+            </ul>
+            <aside class="notes">60 Minutes</aside>
+          </section>
+          <section id="challenge-18-element-queries" data-state="gold">
+            <h2>Challenge 18: Element Queries</h2>
+            <ul>
+              <li>Rewrite the recipe meta information (<code class="language-markup">&lt;footer&gt;</code> in <code class="language-scss">.recipe</code>) to change its layout from block to inline depending on if there is enough room to display them all inline</li>
+              <li>Using identical markup, keep one version where it is and add another into the <code class="language-scss">.media</code> section, under the carousel</li>
+              <li><strong class="lowercase">Hint!</strong> Look at <code class="language-markup">github.com/snugug/eq.js</code> and Bower</li>
+            </ul>
+          </section>
+        </section>
 
 
 
