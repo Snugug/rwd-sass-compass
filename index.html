@@ -901,6 +901,128 @@ $message-extendables-extended: true;</code></pre>
               <li>Using identical markup, keep one version where it is and add another into the <code class="language-scss">.media</code> section, under the carousel</li>
               <li><strong class="lowercase">Hint!</strong> Look at <code class="language-markup">github.com/snugug/eq.js</code> and Bower</li>
             </ul>
+            <aside class="notes">20 Minutes</aside>
+          </section>
+        </section>
+
+        <!-- Grunt -->
+        <section data-transition="zoom">
+          <section id="grunt">
+            <h1>Grunt</h1>
+          </section>
+        </section>
+        <section data-transition="concave">
+          <section id="grunt-intro">
+            <p class="half">Grunt is a Node.js based task runner that can do just about anything. From running development servers to live reloading sites to hinting, linting, compiling and compressing, any development task you can think of, you can get Grunt to do. And it's all written in JavaScript!</p>
+            <img src="img/grunt.png" alt="Grunt">
+          </section>
+        </section>
+
+        <section>
+          <section id="node-package">
+            <h2>package.json</h2>
+          </section>
+          <section id="package-basics">
+            <p>When working with Grunt, you're turning your development area into a Node project regardless of what language you're working in. You can quickly initialize a Node project by running <code class="language-bash">npm init</code>, which will create your <code class="language-bash">package.json</code>.</p>
+            <p class="fragment">The primary reason for this is the need to install and use Node modules in order to use Grunt.</p>
+          </section>
+          <section id="package-basics-example">
+            <pre><code class="language-javascript">{
+  "name": "code-rwd-sass-compass",
+  "version": "0.0.0",
+  "description": "Code for RWD Training",
+  "author": "Sam Richard",
+  "license": "MIT",
+  "devDependencies": {}
+}</code></pre>
+          </section>
+          <section id="package-installing-modules">
+            <p>When working with Grunt, most of what you're working with are development packages. When you go to install a package using <code class="language-bash">npm install</code>, appending <code class="language-bash">--save-dev</code> to the end will save them into your package file.</p>
+            <p class="fragment">The minimum packages you need in order to run Grunt and use contributed Grunt tasks are <code class="language-bash">grunt</code> and <code class="language-bash">matchdep</code></p>
+            <p class="fragment">Installed modules will be saved to a <code class="language-bash">node_modules</code> file. Be sure to ignore this folder in your version control! Don't commit it in!</p>
+          </section>
+        </section>
+
+        <section>
+          <section id="gruntfile">
+            <h2>Gruntfile</h2>
+          </section>
+          <section id="gruntfile-basics">
+            <p>Your <code class="language-bash">Gruntfile.js</code> file is the brains of the boar. Each project you start gets its own Gruntfile that you get to write from scratch.</p>
+            <p class="fragment">A Gruntfile is written in strict JavaScript via Node, none of your jQuery here. You'll be adding configuration to a grunt object and creating tasks. Unlike most of Node, Grunt tasks run in series, not parallel.</p>
+          </section>
+          <section id="gruntfile-basics-example">
+            <pre><code class="language-javascript small">(function() {
+  'use strict';
+
+  module.exports = function (grunt) {
+    // Grunt task configuration
+    grunt.initConfig({
+      // Configuration goes in here
+    });
+
+    // Use matchdep to load all Grunt tasks from package.json
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
+    // Custom Grunt tasks go here.
+    // This is the special `default` task
+    grunt.registerTask('default', function () {
+      console.log('This runs when you run `grunt`');
+    });
+  };
+}());</code></pre>
+          </section>
+          <section id="gruntfile-config-example">
+            <pre><code class="language-javascript">grunt.initConfig({
+  connect: {
+    server: {
+      options: {
+        port: 9001,
+        base: '.'
+      }
+    }
+  }
+});</code></pre>
+          </section>
+          <section id="gruntfile-task-example">
+            <pre><code class="language-javascript">//////////////////////////////
+// Server Task
+//////////////////////////////
+grunt.registerTask('server', function () {
+  grunt.task.run(['connect']);
+});</code></pre>
+          </section>
+        </section>
+
+        <section>
+           <section id="challenge-19-watch-and-serve" data-state="bronze">
+            <h2>Challenge 19: Watch and Serve</h2>
+            <ul>
+              <li>Set up a <code class="language-bash">server</code> task to watch for changes in image, javascript, css, and html, and livereload your page.</li>
+              <li>Only watch for CSS file changes, not Sass changes</li>
+              <li>Add an option to your task to choose to launch your site when the server has started</li>
+              <li><strong class="lowercase">Hint!</strong> Take a look at <code class="language-bash">grunt-contrib-connect, grunt-contrib-watch, grunt-open</code>. Make sure to ignore the node module files!</li>
+            </ul>
+            <aside class="notes">20 Minutes</aside>
+          </section>
+          <section id="challenge-20-hint-compile-config" data-state="silver">
+            <h2>Challenge 20: Hint, Compile, Config</h2>
+            <ul>
+              <li>Set up JSHint your JavaScript on save</li>
+              <li>Compile your Sass through Grunt; get rid of your <code class="language-bash">config.rb</code> file</li>
+              <li>Set up your and read in your server and Compass configuration options from a <code class="language-bash">config.yml</code> file</li>
+              <li><strong class="lowercase">Hint!</strong> Don't livereload your page on Sass changes.</li>
+            </ul>
+            <aside class="notes">30 Minutes</aside>
+          </section>
+          <section id="challenge-21-production-ready" data-state="gold">
+            <h2>Challenge 21: Production Ready</h2>
+            <ul>
+              <li>Create a task that will write a Bundler Gemfile based on your required gems. You'll need to add versions. Make sure the Gemfile is up to date on every run of <code class="langugae-bash">grunt server</code></li>
+              <li>Create a <code class="language-bash">build</code> task that will hint your JavaScript then minimize your images and SVGs and create a production build of Compass, putting everything into an <code class="language-bash">export</code> folder (with the exact location controlled by the user)</li>
+              <li>Use SEMVER to bump your project version, including tagging and releasing git tags, through a command</li>
+            </ul>
+            <aside class="notes">30 Minutes</aside>
           </section>
         </section>
 
